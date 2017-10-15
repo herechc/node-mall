@@ -20,4 +20,4 @@ Ids.findOne(function(err,data){
   }
 })
 
-export default Ids
+module.exports = Ids

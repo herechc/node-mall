@@ -8,6 +8,7 @@ var ShopSchema = new Schema({
   },
   full_address: String,
   mobile:Number,
+  id:Number,
   detail: String,
   slogan:String,
   category:{
