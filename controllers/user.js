@@ -13,11 +13,16 @@ exports.signup = function(req,res){
     if(user){
       res.json({success: false})
     } else{
+      console.log(_user)
       _user.save(function(err){
         if(err){
           console.log(err)
         }
-        res.json({success: true})
+        res.json({
+          status: 0,
+          message:'处理成功',
+          data: req.body
+        })
       })
     }
   })

@@ -44,16 +44,16 @@ ShopSchema.pre('save',function(next){
   next()
 })
 
-ShopSchema.static = {
+ShopSchema.statics = {
   fetch:function(cb){
     return this
       .find({})
       .sort('meta.updateAt')
       .exec(cb)
   },
-  findById:function(id,cb){
+  findById:function(_id,cb){
     return this
-      .findOne({_id:id})
+      .findOne({id:_id})
       .exec(cb)
   }
 }

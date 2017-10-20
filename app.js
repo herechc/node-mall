@@ -10,7 +10,7 @@ var dbUrl = 'mongodb://127.0.0.1:27017/mall'
 mongoose.connect(dbUrl)
 
 var app = express();
-
+var router = express.Router()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,6 +23,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/',function(req,res){
+ res.send('Hello World!')
+  console.log(1)
+})
+
 require('./routes/index')(app)
 
+app.listen(3000);
+
 module.exports = app;
+
