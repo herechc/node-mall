@@ -10,7 +10,7 @@ export  default {
     if(!categorr_id){
       console.log('获取分类id失败')
       res.send({
-        status: -1,
+        code: -1,
         message: '获取失败',
         type: 'ERROR_DATA'
       })
@@ -27,7 +27,7 @@ export  default {
       }
       if(category){
         res.send({
-          status: -1,
+          code: -1,
           message: '处理失败',
           type: 'ERROR_PARAMS'
         })
@@ -39,7 +39,7 @@ export  default {
             console.log(err)
           }
           res.json({
-            status: 0,
+            code: 0,
             message: '处理成功'
           })
         })
@@ -54,7 +54,7 @@ export  default {
         console.log(err)
       }
       res.send({
-        status: 0,
+        code: 0,
         message: '处理成功',
         data: category
       })

@@ -32,7 +32,7 @@ exports.new = async function (req, res) {
     } catch (err) {
       console.log('前台参数出错:', err.message)
       res.json({
-        status: -1,
+        code: -1,
         type: 'ERROR_PARAMS',
         message: err.message
       })
@@ -64,19 +64,19 @@ exports.new = async function (req, res) {
               cate.shops.push(shop._id)
               cate.save()
               res.json({
-                status: 0,
+                code: 0,
                 message: '添加成功'
               })
             }) 
           }catch(err){
             res.send({
-              status:-1,
+              code:-1,
               message:err
             })
           }
         }else {
           res.json({
-            status: -1,
+            code: -1,
             message: '商品已经存在',
             type: 'ERROR_PARAMS'
           })
@@ -84,7 +84,7 @@ exports.new = async function (req, res) {
       })
     } catch (err) {
       res.json({
-        status: -1,
+        code: -1,
         type: 'ERROR_SERVER',
         message: '添加失败'
       })
@@ -101,13 +101,13 @@ exports.list = function(req,res){
       }
       if(shop){
         res.send({
-          status: 0,
+          code: 0,
           data:shop,
           message: '处理成功'
         })
       }else {
         res.send({
-          status:-1,
+          code:-1,
           message:'处理失败'
         })
       }
@@ -119,13 +119,13 @@ exports.list = function(req,res){
       }
       if(shop){
         res.send({
-          status: 0,
+          code: 0,
           data:shop,
           message: '处理成功'
         })
       }else {
         res.send({
-          status:-1,
+          code:-1,
           message:'处理失败'
         })
       }

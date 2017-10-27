@@ -8,6 +8,7 @@ var UserSchema  = new mongoose.Schema({
     type: String
   },
   password: String,
+  token:String,
   meta:{
     createAt:{
       type: Date,
@@ -22,25 +23,23 @@ var UserSchema  = new mongoose.Schema({
 
 UserSchema.pre('save',function(next){
   var user = this
-  if(this.isNew){
+  if(this.isModified('password') || this.isNew){
     user.meta.createAt = user.meta.update = Date.now()
+    bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
+      if(err){
+        return next(err)
+      }
+      bcrypt.hash(user.password, salt, function(err, hash){
+        if(err){
+          return next(err);
+        }
+        user.password = hash;
+        next();
+      });
+    })
   } else{
     user.meta.updateAt = Date.now()
   }
-
-  bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
-    if(err){
-      return next(err)
-    }
-    bcrypt.hash(user.password, salt, function(err, hash){
-			if(err){
-				return next(err);
-			}
-			
-			user.password = hash;
-			next();
-		});
-  })
 })
 
 UserSchema.methods = {
