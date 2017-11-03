@@ -35,7 +35,6 @@ export  default {
         })
       }else{
         _category.save(function(err){
-          console.log(122)
           if(err){
             console.log(err)
           }
