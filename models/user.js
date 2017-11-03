@@ -20,46 +20,56 @@ var UserSchema  = new mongoose.Schema({
     }
   }
 })
-
+///每次存储数据之前都调用这个方法 pre save
 UserSchema.pre('save',function(next){
   var user = this
+  //帐号是否是新的，是否修改密码
   if(this.isModified('password') || this.isNew){
     user.meta.createAt = user.meta.update = Date.now()
+	//先生成随机盐，再将密码和盐混合加密，最终拿到存储密码。第一个参数为计算强度，即计算密码所需的资源和时间，回调方法拿到生成后的盐
     bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
       if(err){
         return next(err)
       }
+      //hash
       bcrypt.hash(user.password, salt, function(err, hash){
         if(err){
           return next(err);
         }
+        //密码加密
         user.password = hash;
         next();
       });
     })
   } else{
+    // 更新时间
     user.meta.updateAt = Date.now()
+    return next()
   }
 })
-
+//通过实例可调用的方法，若为静态方法statics则用模型便可(对应app.js的signin)
 UserSchema.methods = {
-  comparePassword: function(_password, cb){
-    bcrypt.compare(_password,this.password,function(err,isWatch){
+  // 验证密码
+  comparePassword: function(_password, cb){//该方法接收提交过来的参数和回调
+    bcrypt.compare(_password,this.password,function(err,isWatch){//bcrypt密码校对方法,与当前数据库密码比对
       if(err){
-        return cb(err)
+        return cb(err) //若有错则包装到回调
       }
-      cb(null,isWatch)
+      cb(null,isWatch)//若没错err为null，并把密码是否是匹配的值返回
     })
   }
 }
 
+//增加一个静态方法，该静态方法不会与数据库直接交互，只有经过model(模型)编译并实例化后才会具有这个方法
 UserSchema.statics = {
+  //取出目前数据库里所有的数据
   fetch:function(cb){
     return this
       .find({})
       .sort('meta.updateAt')
       .exec(cb)
   },
+  //用来查询单条数据
   findById:function(id,cb){
     return this
       .findOne({_id:id})

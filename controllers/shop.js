@@ -1,14 +1,16 @@
 import Shop from'../models/shop'
 import formidable from 'formidable'
-import baseComponent from '../prototype/base'
+import common from '../prototype/common'
 import Ids from '../models/ids'
 import Category from '../models/category'
+
+const _common = new common()
+
 //添加餐馆
 exports.new = async function (req, res) {
-  let restaurant_id;
-  let cate;
+  let restaurant_id,cate;
   try{
-    restaurant_id = await baseComponent.base.getId('restaurant_id')
+    restaurant_id = await _common.getId('restaurant_id')
   }catch(err){
     console.log('获取商店id失败')
     res.send({
@@ -32,7 +34,7 @@ exports.new = async function (req, res) {
     } catch (err) {
       console.log('前台参数出错:', err.message)
       res.json({
-        code: -1,
+        code: 0,
         type: 'ERROR_PARAMS',
         message: err.message
       })
@@ -54,7 +56,9 @@ exports.new = async function (req, res) {
     try {
       var shop = new Shop(newShop)
       shop.category = cate._id
+      // console.log(123,shop)
       Shop.findOne({name:fields.name},function(err,_shop){
+        console.log(_shop)
         if(!_shop){
           try{
             shop.save((err,shop)=>{
@@ -64,19 +68,19 @@ exports.new = async function (req, res) {
               cate.shops.push(shop._id)
               cate.save()
               res.json({
-                code: 0,
+                code: 1,
                 message: '添加成功'
               })
             }) 
           }catch(err){
             res.send({
-              code:-1,
+              code:0,
               message:err
             })
           }
         }else {
           res.json({
-            code: -1,
+            code: 0,
             message: '商品已经存在',
             type: 'ERROR_PARAMS'
           })
@@ -84,7 +88,7 @@ exports.new = async function (req, res) {
       })
     } catch (err) {
       res.json({
-        code: -1,
+        code: 0,
         type: 'ERROR_SERVER',
         message: '添加失败'
       })
@@ -101,13 +105,13 @@ exports.list = function(req,res){
       }
       if(shop){
         res.send({
-          code: 0,
+          code: 1,
           data:shop,
           message: '处理成功'
         })
       }else {
         res.send({
-          code:-1,
+          code:0,
           message:'处理失败'
         })
       }
@@ -119,13 +123,13 @@ exports.list = function(req,res){
       }
       if(shop){
         res.send({
-          code: 0,
+          code: 1,
           data:shop,
           message: '处理成功'
         })
       }else {
         res.send({
-          code:-1,
+          code:0,
           message:'处理失败'
         })
       }

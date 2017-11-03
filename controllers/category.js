@@ -1,23 +1,25 @@
 import Category from '../models/category'
 // import _ from 'underscore'
-import baseComponent from '../prototype/base'
+import common from '../prototype/common'
 
+const _common = new common()
 export  default {
   //新建分类
   new: async (req,res)=>{
-    let categorr_id;
-    categorr_id = await baseComponent.base.getId('category_id')
-    if(!categorr_id){
+    let category_id;
+    category_id = await _common.getId('category_id')
+    console.log(category_id)
+    if(!category_id){
       console.log('获取分类id失败')
       res.send({
-        code: -1,
+        code: 0,
         message: '获取失败',
         type: 'ERROR_DATA'
       })
       return
     }
     let cateOjb = req.body;
-    cateOjb.id = categorr_id;
+    cateOjb.id = category_id;
 
     let _category = new Category(cateOjb);
     Category.findOne({name: _category.name},(err,category)=>{
@@ -27,19 +29,18 @@ export  default {
       }
       if(category){
         res.send({
-          code: -1,
-          message: '处理失败',
+          code: 0,
+          message: '分类已存在',
           type: 'ERROR_PARAMS'
         })
       }else{
-        console.log(333,_category)
         _category.save(function(err){
           console.log(122)
           if(err){
             console.log(err)
           }
           res.json({
-            code: 0,
+            code: 1,
             message: '处理成功'
           })
         })
@@ -48,16 +49,39 @@ export  default {
   },
   //获取分类列表
   list:(req,res) => {
-    console.log(Category.fetch())
     Category.fetch(function(err,category){
-      if(err){
-        console.log(err)
-      }
+      if(err) console.log(err);
       res.send({
-        code: 0,
+        code: 1,
         message: '处理成功',
-        data: category
+        list: category
       })
     })
+  },
+  //删除分类
+  del: async (req,res)=>{
+    const cate_id = req.params.id
+    if(!cate_id || !parseInt(cate_id)){
+      console.log("cate_id参数错误")
+      res.send({
+        code:0,
+        message: 'category_id参数错误',
+        type: "ERROR_PARAMS"
+      })
+      return
+    }
+    try{
+      await Category.remove({id:cate_id})
+      res.send({
+        code:0,
+        message:'处理成功'
+      })
+    }catch(err){
+      console.log('删除cate_id失败')
+      res.send({
+        code:0,
+        message:'删除分类失败'
+      })
+    }
   }
 }

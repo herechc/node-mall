@@ -10,6 +10,7 @@ const categorySchema = new Schema({
   },
   id: Number,
   shops:[{type:ObjectId,ref:'Shop'}],
+  goods:[{type:ObjectId,ref:'Goods'}],
   meta:{
     createAt:{
       type:Date,

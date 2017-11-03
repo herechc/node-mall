@@ -37,7 +37,7 @@ var ShopSchema = new Schema({
 
 ShopSchema.pre('save',function(next){
   if(this.isNew){
-    this.meta.createAt = Date.now()
+    this.meta.createAt = this.meta.updateAt = Date.now()
   } else {
     this.meta.updateAt = Date.now()
   }

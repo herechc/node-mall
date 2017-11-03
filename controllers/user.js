@@ -4,7 +4,7 @@ import passport from 'passport'
 import config from '../config'
 exports.signup = function(req,res){
   if(!req.body.name || !req.body.password){
-    res.json({message: '请输入您的帐号密码',code: -1})
+    res.json({message: '请输入您的帐号密码',code: 0})
   }else {
     var _user = new User({
       name: req.body.name,
@@ -13,10 +13,10 @@ exports.signup = function(req,res){
     _user.save(function(err){
       if(err){
         console.log(err)
-        return res.json({message:'注册失败,帐号已经存在',code:-1})
+        return res.json({message:'注册失败,帐号已经存在',code:0})
       }
       res.json({
-        code: 0,
+        code: 1,
         message:'处理成功'
       })
     })
@@ -35,19 +35,21 @@ exports.login = function(req,res){
       }
     }catch(err){
       res.send({
-        code:-1,
+        code:0,
         type:'ERROR_PRAMAS',
         message:err.message
       })
       return
     }
+    console.log(22,user)
     if(!user){
-      return res.json({message: '不存在账号',code:-1,type:'ERROR_PARAMS'})
+      return res.json({message: '不存在账号',code:0,type:'ERROR_PARAMS'})
     }
     user.comparePassword(psw,function(err,isMatch){
       if(err){
         console.log(err)
       }
+      console.log(isMatch,err)
       if(isMatch && !err){
         let token =  jwt.sign({name:user.name},config.secret,{
           expiresIn:10080
@@ -55,15 +57,15 @@ exports.login = function(req,res){
         user.token = token
         user.save(err=>{
           if(err) res.send(err)
-        })
-        res.json({
-          message:'处理成功',
-          code:0,
-          type:'SUCCESS',
-          token: token
+          res.json({
+            message:'处理成功',
+            code:1,
+            type:'SUCCESS',
+            token:token
+          })
         })
       } else{
-        res.json({message:'密码错误',code:-1,type:'ERROR_PASSWORD'})
+        res.json({message:'密码错误',code:0,type:'ERROR_PASSWORD'})
       }
     })
   })
