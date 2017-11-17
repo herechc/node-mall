@@ -95,13 +95,57 @@ class _Goods extends common{
     }
   }
   list(req,res,next){
-    Goods.fetch(function(err,goods){
-      if(err) console.log(err);
-      res.send({
-        code:1,
-        message:'处理成功',
-        list:goods
+    if(req.query.id){
+      const idlist = req.query.id
+      let goodslist = [];
+      Object.keys(idlist).forEach(key => {
+        Goods.findById(idlist[key],function(err,_goods){
+          goodslist.push(_goods)
+          if(goodslist.length == idlist.length){
+            res.send({
+              code:1,
+              message: '处理成功',
+              list:goodslist
+            })
+          }
+        })
       })
+    } else {
+      Goods.fetch(function(err,goods){
+        if(err) console.log(err);
+        res.send({
+          code:1,
+          message:'处理成功',
+          list:goods
+        })
+      })
+    }
+  }
+  details(req,res){
+    const goods_id = req.params.id;
+    if(!goods_id){
+      res.send({
+        type:'ERROR_PARAMS',
+        message: '商品id不能为空',
+        code: 0
+      })
+    }
+    // console.log(33,req.params.id)
+    Goods.findById(goods_id,function(err,goods){
+      if(err) console.log(err)
+      if(!goods){
+        res.send({
+          message:'商品不存在',
+          code:0
+        })
+        return
+      } else {
+        res.send({
+          message: '处理成功',
+          code:1,
+          list: goods
+        })
+      }
     })
   }
   async del(req,res,next){

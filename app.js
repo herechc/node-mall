@@ -10,13 +10,15 @@ mongoose.Promise = global.Promise
 
 mongoose.connect(config.database)
 
-import morgan from 'morgan';//命令行log显示
-
-import passport from 'passport';//用户认证模块
-require('./utils/passport')(passport)//验证方法
-
 var app = express();
 var router = express.Router()//路由
+
+import morgan from 'morgan';//命令行log显示
+import passport from 'passport';//非常流行的权限验证库, 用户认证模块passport
+require('./utils/passport')(passport)//验证方法
+
+//初始化passport模块
+app.use(passport.initialize());
 
 // app.all('*', (req, res, next) => {
 // 	res.header("Access-Control-Allow-Origin", req.headers.origin || '*');
@@ -35,8 +37,7 @@ var router = express.Router()//路由
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//初始化passport模块
-app.use(passport.initialize());
+
 //命令行中显示程序运行日志，便于bug调试
 app.use(morgan('dev'))
 // uncomment after placing your favicon in /public

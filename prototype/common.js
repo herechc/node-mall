@@ -3,30 +3,10 @@ import fs from 'fs'
 import path from 'path'
 import gm from 'gm'
 import formidable from 'formidable'
-// exports.base = {
-//   idList:['restaurant_id','food_id','user_id','category_id'],
-//   getId: async function(type){
-//     if(!this.idList.includes(type)){
-//       console.log('Id类型错误')
-//       // throw new Error('id类型错误')
-//       return
-//     }
-//     // try{
-//     const idData = await Ids.findOne();
-//     idData[type]++ ;
-//     await idData.save();
-//     console.log('base',idData[type])
-//     return idData[type];
-//     // }catch(err){
-//     //   console.log('获取ID数据失败');
-//     //   throw new Error(err);
-//     // }
-//   }
-// }
 
 export default class base {
   constructor(){
-    this.idList = ['restaurant_id','food_id','user_id','category_id','img_id','banner_id','goods_id'];
+    this.idList = ['restaurant_id','food_id','admin_id','category_id','img_id','banner_id','goods_id','user_id','userInfo_id','order_id'];
     this.uploadImg = this.uploadImg.bind(this)
   }
   async getId(type){
@@ -37,6 +17,7 @@ export default class base {
     const idData = await Ids.findOne();
     idData[type]++ ;
     await idData.save();
+    // console.log(33,idData[type])
     return idData[type];
   }
   async uploadImg(req,res,next){

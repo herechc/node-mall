@@ -50,12 +50,35 @@ export  default {
   list:(req,res) => {
     Category.fetch(function(err,category){
       if(err) console.log(err);
+      const cate = category.reverse()
       res.send({
         code: 1,
         message: '处理成功',
-        list: category
+        list: cate
       })
     })
+  },
+  goods: (req,res) => {
+    const cate_id = req.params.id
+    if(!cate_id || !parseInt(cate_id)){
+      console.log("cate_id参数错误")
+      res.send({
+        code:0,
+        message: 'category_id参数错误',
+        type: "ERROR_PARAMS"
+      })
+      return
+    }
+    Category
+      .find({id:cate_id})
+      .populate('goods')
+      .exec(function(err,category){
+        res.send({
+          code:1,
+          message:'处理成功',
+          list:category[0].goods
+        })
+      })
   },
   //删除分类
   del: async (req,res)=>{

@@ -1,53 +1,62 @@
-var mongoose = require('mongoose')
-var bcrypt = require('bcryptjs')
-var SALT_WORK_FACTOR = 10
-
-var UserSchema  = new mongoose.Schema({
-  name:{
-    unique: true,
-    type: String
+import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs'
+const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
+const SALT_WORK_FACTOR = 10
+const UserSchema = new Schema({
+  username:{
+    type:String,
+    unique:true
+    // require: true // 不可为空约束
   },
-  password: String,
+  id:Number,
+  //username跟name同时设置unique，那么我每次注册的时候name都提交空值，所以会返回错误
+  password:String,
   token:String,
+  userInfo:{
+    type:ObjectId,
+    ref:'UserInfo'
+  },
+  order:[{
+    type:ObjectId,
+    ref:'Order'
+  }],
   meta:{
     createAt:{
-      type: Date,
-      default: Date.now()
+      type:Date,
+      default:Date.now()
     },
     updateAt:{
-      type: Date,
-      default: Date.now()
+      type:Date,
+      default:Date.now()
     }
-  }
+  },
 })
-///每次存储数据之前都调用这个方法 pre save
+
+
+//每次保存执行的方法
 UserSchema.pre('save',function(next){
   var user = this
-  //帐号是否是新的，是否修改密码
-  if(this.isModified('password') || this.isNew){
-    user.meta.createAt = user.meta.update = Date.now()
-	//先生成随机盐，再将密码和盐混合加密，最终拿到存储密码。第一个参数为计算强度，即计算密码所需的资源和时间，回调方法拿到生成后的盐
+  //这里别使用箭头函数，因为会改变this指向
+  if(this.isModified('password') || this.isNew && user.password){
+    user.meta.createAt = user.meta.updateAt = Date.now()
+
     bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
-      if(err){
-        return next(err)
-      }
-      //hash
-      bcrypt.hash(user.password, salt, function(err, hash){
-        if(err){
-          return next(err);
-        }
-        //密码加密
-        user.password = hash;
-        next();
-      });
+      if(err) return next(err);
+      bcrypt.hash(user.password, salt, function(err,hash){
+        // console.log(233,hash)
+        if(err) return next(err);
+        user.password = hash
+        next()
+      })
     })
-  } else{
-    // 更新时间
-    user.meta.updateAt = Date.now()
+  } else {
+    this.meta.updateAt = Date.now()
     return next()
   }
+  
 })
-//通过实例可调用的方法，若为静态方法statics则用模型便可(对应app.js的signin)
+
 UserSchema.methods = {
   // 验证密码
   comparePassword: function(_password, cb){//该方法接收提交过来的参数和回调
@@ -60,22 +69,20 @@ UserSchema.methods = {
   }
 }
 
-//增加一个静态方法，该静态方法不会与数据库直接交互，只有经过model(模型)编译并实例化后才会具有这个方法
+
 UserSchema.statics = {
-  //取出目前数据库里所有的数据
   fetch:function(cb){
     return this
       .find({})
       .sort('meta.updateAt')
       .exec(cb)
   },
-  //用来查询单条数据
-  findById:function(id,cb){
+  findById:function(_id,cb){
     return this
-      .findOne({_id:id})
+      .findOne({id:_id})
       .exec(cb)
   }  
 }
 
-var User = mongoose.model('User',UserSchema)
-module.exports = User
+const User = mongoose.model('User',UserSchema)
+export default User
