@@ -101,8 +101,41 @@ class _User extends common{
           })
         }
       })
-      
     })
+  }
+  async list(req, res) {
+    let {page = 0, pageSize = 20} = req.query
+    page > 0 && (page -= 1)
+    let pagNum = pageSize * page
+    try{
+      const users = await User.find({}).sort("meta.createAt").limit(pageSize).skip(pagNum)
+      console.log(users)
+      if(!users) {
+        res.send({
+          code: 1,
+          message:'获取成功',
+          list: []
+        })
+        return
+      }
+      let data = []
+      Object.keys(users).forEach(key => {
+        data[key] = {id: users[key].id, name: users[key].username, createAt: Date.parse(users[key].meta.createAt)}
+      })
+      const total = await User.count()
+      res.send({
+        code: 1,
+        message: '获取成功',
+        list: data,
+        total: total
+      })
+    }catch(err){
+      console.log(err)
+      res.send({
+        code:0,
+        message:'获取失败'
+      })
+    }
   }
 }
 
