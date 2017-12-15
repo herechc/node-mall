@@ -95,7 +95,7 @@ export  default {
     try{
       await Category.remove({id:cate_id})
       res.send({
-        code:0,
+        code:1,
         message:'处理成功'
       })
     }catch(err){

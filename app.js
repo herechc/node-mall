@@ -7,6 +7,10 @@ var bodyParser = require('body-parser');//解析body字段模块
 var mongoose = require('mongoose')
 var session =  require('express-session')//注意：要把session定义在mongoose前面
 var mongoStore = require('connect-mongo')(session)
+
+var winston = require('winston')
+var expressWinston = require('express-winston')
+
 import config from './config';//默认配置文件
 mongoose.Promise = global.Promise
 
@@ -65,9 +69,33 @@ app.use(session({//会话配置项
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 正常请求的日志
+app.use(expressWinston.logger({
+  transports: [
+    new (winston.transports.Console)({
+      json: true,
+      colorize: true
+    }),
+    new winston.transports.File({
+      filename: 'logs/success.log'
+    })
+  ]
+}))
 //路由
 require('./routes/index')(app)
-
+// 错误请求的日志
+app.use(expressWinston.errorLogger({
+  transports: [
+    new winston.transports.Console({
+      json: true,
+      colorize: true
+    }),
+    new winston.transports.File({
+      filename: 'logs/error.log'
+    })
+  ]
+}))
+app.use
 //监听
 app.listen(3000);
 
