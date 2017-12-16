@@ -62,4 +62,5 @@ module.exports = function(app){
   app.get('/v1/category/goods/:id',validate.userToken,Category.goods)
   //banner
   app.get('/v1/banner',validate.userToken,Banner.list )
+  
 }
