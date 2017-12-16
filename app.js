@@ -26,18 +26,6 @@ require('./utils/passport')(passport)//验证方法
 //初始化passport模块
 app.use(passport.initialize());
 
-app.all('*', (req, res, next) => {
-	res.header("Access-Control-Allow-Origin", req.headers.origin || '*');
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-	res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-  	res.header("Access-Control-Allow-Credentials", true); //可以带cookies
-	res.header("X-Powered-By", '3.2.1')
-	if (req.method == 'OPTIONS') {
-	  	res.send(200);
-	} else {
-	    next();
-	}
-});
 
 // view engine setup 设置模版
 app.set('views', path.join(__dirname, 'views'));
@@ -69,13 +57,27 @@ app.use(session({//会话配置项
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* 跨域 */
+app.all('*', (req, res, next) => {
+	res.header("Access-Control-Allow-Origin", req.headers.origin || '*');
+	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+	res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Credentials", true); //可以带cookies
+	res.header("X-Powered-By", '3.2.1')
+	if (req.method == 'OPTIONS') {
+	  	res.send(200);
+	} else {
+	    next();
+	}
+});
+
 // 正常请求的日志
 app.use(expressWinston.logger({
   transports: [
-    new (winston.transports.Console)({
-      json: true,
-      colorize: true
-    }),
+    // new (winston.transports.Console)({
+    //   json: true,
+    //   colorize: true
+    // }),
     new winston.transports.File({
       filename: 'logs/success.log'
     })
@@ -95,7 +97,7 @@ app.use(expressWinston.errorLogger({
     })
   ]
 }))
-app.use
+// app.use
 //监听
 app.listen(9090);
 

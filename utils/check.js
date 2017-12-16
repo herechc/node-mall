@@ -6,6 +6,7 @@ class Check{
   }
   async checkAdmin(req,res,next){
     const admin_id = req.session.admin_id
+    console.log(323,admin_id)
     if(!admin_id && !Number(admin_id)){
       res.send({
         code:0,

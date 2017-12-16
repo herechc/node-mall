@@ -24,15 +24,14 @@ module.exports = function(app){
   //admin
   app.post('/v1/admin/signup',Admin.signup)
   app.post('/v1/admin/login',Admin.login)
-
   //list
-  app.get('/v1/admin/list',validate.adminToken, Admin.list)
+  app.get('/v1/admin/list',check.checkAdmin,validate.adminToken, Admin.list)
   app.get('/v1/user/list',validate.adminToken, User.list)
 
   //shop
   app.post('/v1/shop/new',check.checkAdmin,validate.adminToken,Shop.new)
   app.get('/v1/shop/list',validate.adminToken,Shop.list)
-
+  
   //category
   app.post('/v1/category/new',validate.adminToken,Category.new)
   app.get('/v1/category/list',validate.adminToken,Category.list)
