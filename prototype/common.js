@@ -1,7 +1,7 @@
 var Ids = require('../models/ids')
 import fs from 'fs'
 import path from 'path'
-import gm from 'gm'
+// import gm from 'gm'
 import formidable from 'formidable'
 
 export default class base {
@@ -24,6 +24,7 @@ export default class base {
     const type = req.params.type
     try{
       const image_path = await this.getPath(req)
+      console.log(32, image_path)
       res.send({
         status:1,
         image_path
@@ -61,31 +62,39 @@ export default class base {
         //图片保存的地址
         const repath = './public/img/' + fullName;
         try{
-          //修改文件名称，可更改文件的存放路径(保存图片)。
           await fs.rename(files.file.path,repath)
-          //对保存到服务器的图片进行裁切
-          //返回剪切的图片
-          gm(repath)
-          .options({
-            //win下使用mg会报错误，因为gm调用的命令是convert，与系统自带命令有所冲突，
-            //需要配置appPath
-            //配置GraphicsMagick的安装路径,避免调用command时与系统的conver冲突
-            appPath:'C:\\Program Files\\GraphicsMagick-1.3.26-Q8\\'
-          })
-          .resize(200, 200, "!")
-          .write(repath, async (err) => {
-            if(err){
-              console.log('裁切图片失败',err)
-              reject('裁切图片失败')
-              return
-            }
-            resolve(fullName)
-          })
+          console.log('保存图片成功')
+          resolve(fullName)
         }catch(err){
           console.log('保存图片失败',err)
-          fs.unlink(files.file.path)
-          reject('保存图片失败')
+          reject(err)
         }
+        // try{
+        //   //修改文件名称，可更改文件的存放路径(保存图片)。
+        //   await fs.rename(files.file.path,repath)
+        //   //对保存到服务器的图片进行裁切
+        //   //返回剪切的图片
+        //   gm(repath)
+        //   .options({
+        //     //win下使用mg会报错误，因为gm调用的命令是convert，与系统自带命令有所冲突，
+        //     //需要配置appPath
+        //     //配置GraphicsMagick的安装路径,避免调用command时与系统的conver冲突
+        //     appPath:'C:\\Program Files\\GraphicsMagick-1.3.26-Q8\\'
+        //   })
+        //   .resize(200, 200, "!")
+        //   .write(repath, async (err) => {
+        //     if(err){
+        //       console.log('裁切图片失败',err)
+        //       reject('裁切图片失败')
+        //       return
+        //     }
+        //     resolve(fullName)
+        //   })
+        // }catch(err){
+        //   console.log('保存图片失败',err)
+        //   fs.unlink(files.file.path)
+        //   reject('保存图片失败')
+        // }
       })
     })
   }

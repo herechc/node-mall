@@ -9,6 +9,8 @@ var AdminSchema  = new mongoose.Schema({
   },
   password: String,
   token:String,
+  id: Number,
+  role: Number,
   meta:{
     createAt:{
       type: Date,
@@ -63,10 +65,12 @@ AdminSchema.methods = {
 //增加一个静态方法，该静态方法不会与数据库直接交互，只有经过model(模型)编译并实例化后才会具有这个方法
 AdminSchema.statics = {
   //取出目前数据库里所有的数据
-  fetch:function(cb){
+  fetch:function(limit,offset,cb){
     return this
       .find({})
-      .sort('meta.updateAt')
+      .sort({admin_id: -1})
+      .limit(Number(limit))
+      .skip(Number(offset))
       .exec(cb)
   },
   //用来查询单条数据

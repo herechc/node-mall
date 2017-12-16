@@ -8,6 +8,7 @@ import validate from '../utils/validate'
 import common from '../prototype/common'
 import UserInfo from '../controllers/userInfo'
 import Order from '../controllers/order'
+import check from '../utils/check'
 const _common = new common()
 
 module.exports = function(app){
@@ -24,26 +25,29 @@ module.exports = function(app){
   app.post('/v1/admin/signup',Admin.signup)
   app.post('/v1/admin/login',Admin.login)
 
+  //list
+  app.get('/v1/admin/list',validate.adminToken, Admin.list)
+  app.get('/v1/user/list',validate.adminToken, User.list)
 
   //shop
-  app.post('/v1/shop/new',validate.adminToken,Shop.new)
+  app.post('/v1/shop/new',check.checkAdmin,validate.adminToken,Shop.new)
   app.get('/v1/shop/list',validate.adminToken,Shop.list)
 
   //category
   app.post('/v1/category/new',validate.adminToken,Category.new)
   app.get('/v1/category/list',validate.adminToken,Category.list)
-  app.post('/v1/category/del/:id',validate.adminToken,Category.del)
+  app.post('/v1/category/del/:id',check.checkAdmin,  validate.adminToken,Category.del)
     
   //img
-  app.post('/addimg/:type',_common.uploadImg)
+  app.post('/addimg/:type',check.checkAdmin, _common.uploadImg)
   //banner
-  app.post('/v1/banner/new',validate.adminToken,Banner.new )    
+  app.post('/v1/banner/new',check.checkAdmin,validate.adminToken,Banner.new )    
   app.get('/v1/banner/list',validate.adminToken,Banner.list )    
-  app.post('/v1/banner/del/:id',validate.adminToken,Banner.del )    
+  app.post('/v1/banner/del/:id',check.checkAdmin,validate.adminToken,Banner.del )    
   //goods
-  app.post('/v1/goods/new',validate.adminToken,Goods.addGoods)
+  app.post('/v1/goods/new',check.checkAdmin,validate.adminToken,Goods.addGoods)
   app.get('/v1/goods/list',validate.adminToken,Goods.list)
-  app.post('/v1/goods/del/:id',validate.adminToken,Goods.del)
+  app.post('/v1/goods/del/:id',check.checkAdmin,validate.adminToken,Goods.del)
 
   /**user**/
   //user

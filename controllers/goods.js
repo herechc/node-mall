@@ -74,7 +74,7 @@ class _Goods extends common{
           cate.goods.push(goods._id)
           await cate.save()
           res.send({
-            code:0,
+            code:1,
             message:'处理成功'
           })
         }else{
@@ -94,7 +94,7 @@ class _Goods extends common{
       })
     }
   }
-  list(req,res,next){
+  async list(req,res,next){
     if(req.query.id){
       const idlist = req.query.id
       let goodslist = [];
@@ -111,14 +111,23 @@ class _Goods extends common{
         })
       })
     } else {
-      Goods.fetch(function(err,goods){
-        if(err) console.log(err);
+      try{
+        let { pageSize = 8 } = req.query
+        let admins = []
+        const data = await Goods.find({}).sort({id: -1}).limit(Number(pageSize))
+        let total = await Goods.count()
+        Object.keys(data).forEach(key => {
+          admins[key] = data[key]
+        })
         res.send({
           code:1,
           message:'处理成功',
-          list:goods
+          list:admins,
+          total: total
         })
-      })
+      }catch(e){
+        console.log(e)
+      }
     }
   }
   details(req,res){
