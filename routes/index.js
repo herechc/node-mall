@@ -25,7 +25,7 @@ module.exports = function(app){
   app.post('/v1/admin/signup',Admin.signup)
   app.post('/v1/admin/login',Admin.login)
   //list
-  app.get('/v1/admin/list',check.checkAdmin,validate.adminToken, Admin.list)
+  app.get('/v1/admin/list',validate.adminToken, Admin.list)
   app.get('/v1/user/list',validate.adminToken, User.list)
 
   //shop
