@@ -6,6 +6,7 @@ yarn-error.log*
 config/*
 !config/default.*
 logs/*.log*
+dist/
 
 # Editor directories and files
 .idea
