@@ -16,6 +16,9 @@ class _UserInfo extends common{
       if(!data.name || !data.mobile || !data.full_address){
         throw new Error('请填写完整的信息')
       }
+      if(typeof(data.mobile / 0 ) != 'number') {
+        throw new Error('手机号码必须是数字')
+      }
     }catch(err){
       res.send({
         code:0,

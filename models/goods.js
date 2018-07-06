@@ -33,7 +33,9 @@ const GoodsSchema = new Schema({
   sold:Number,
   stock:Number,
   picture:Array
-})
+},{
+  usePushEach: true
+  })
 
 //每次保存执行的方法
 GoodsSchema.pre('save',function(next){

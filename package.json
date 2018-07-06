@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "cross-env NODE_ENV=dev nodemon index.js",
+    "stage": "cross-env NODE_ENV=stage pm2 start index.js",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -15,6 +17,7 @@
     "body-parser": "~1.18.2",
     "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "cross-env": "^5.2.0",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
@@ -23,7 +26,7 @@
     "gm": "^1.23.0",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.1.0",
-    "mongoose": "^4.12.0",
+    "mongoose": "^5.1.7",
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",

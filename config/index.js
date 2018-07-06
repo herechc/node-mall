@@ -1,7 +1,8 @@
-export default {
-  'secret': 'vueMallRestFulWithHerec',//userd when we create and verify JSON Web Tokens
-  'database': 'mongodb://127.0.0.1:27017/mall',
-  session: {
+
+let config = {
+	'secret': 'vueMallRestFulWithHerec',//userd when we create and verify JSON Web Tokens
+	'database': 'mongodb://127.0.0.1:27017/mall',
+	session: {
 		name: 'SID',
 		secret: 'SID',
 		cookie: {
@@ -11,3 +12,9 @@ export default {
 		}
 	}
 }
+
+if (process.env.NODE_ENV == "stage") {
+	config.database = "mongodb://127.0.0.1:27017/mall"
+}
+
+export default config

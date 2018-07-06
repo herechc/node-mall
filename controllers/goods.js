@@ -73,6 +73,7 @@ class _Goods extends common{
           //保存分类的goods
           cate.goods.push(goods._id)
           await cate.save()
+          console.log("保存成功!!!!")
           res.send({
             code:1,
             message:'处理成功'
