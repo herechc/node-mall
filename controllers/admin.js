@@ -86,8 +86,9 @@ exports.login = function(req,res){
         admin.token = token
         admin.save(err=>{
           if(err) res.send(err)
-          // console.log(323,admin.id)
           req.session.admin_id = admin.id
+          // console.log(323,req.session)
+          req.session.save()
           res.json({
             message:'处理成功',
             code:1,
@@ -102,6 +103,7 @@ exports.login = function(req,res){
   })
 }
 exports.list = function(req, res) {
+  // console.log(req.session)
   let {page = 0, pageSize = 20} = req.query
   page > 0 && (page -= 1)
   /*如果这样写，会返回整个模型，里面有一堆我们需要的数据，
@@ -132,5 +134,8 @@ exports.list = function(req, res) {
 }
 
 exports.adminRequired = function(req, res){
-
+  res.send({
+    code: 1,
+    message: '超级管理员'
+  })
 }

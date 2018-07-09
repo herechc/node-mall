@@ -24,7 +24,6 @@ module.exports = function(app){
   //admin
   app.post('/v1/admin/signup',Admin.signup)
   app.post('/v1/admin/login',Admin.login)
-
   //list
   app.get('/v1/admin/list',validate.adminToken, Admin.list)
   app.get('/v1/user/list',validate.adminToken, User.list)
@@ -32,7 +31,7 @@ module.exports = function(app){
   //shop
   app.post('/v1/shop/new',check.checkAdmin,validate.adminToken,Shop.new)
   app.get('/v1/shop/list',validate.adminToken,Shop.list)
-
+  
   //category
   app.post('/v1/category/new',validate.adminToken,Category.new)
   app.get('/v1/category/list',validate.adminToken,Category.list)
@@ -66,4 +65,5 @@ module.exports = function(app){
   app.get('/v1/category/goods/:id',validate.userToken,Category.goods)
   //banner
   app.get('/v1/banner',validate.userToken,Banner.list )
+  
 }
